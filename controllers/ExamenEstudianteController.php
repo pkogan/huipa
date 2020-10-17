@@ -64,7 +64,7 @@ class ExamenEstudianteController extends Controller {
         $to = 'pablo.kogan@fi.uncoma.edu.ar';
         $send = Yii::$app->mailer->compose()
                 ->setFrom('pablo.kogan@fi.uncoma.edu.ar')
-                ->setBcc(split(',',$model->idExamen0->cco))
+                ->setBcc(explode(',',$model->idExamen0->cco))
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setHtmlBody('Estimadx, ' . $model->idEstudiante0->apellidoNombre .
