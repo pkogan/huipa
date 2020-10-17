@@ -127,7 +127,7 @@ class ExamenController extends Controller {
 
                             if (!$examenestudiante->save()) {
                                 $row['msj'] = 'Error al guardar estudiante';
-                                foreach ($examenestudiante - errors as $atributo => $errores)
+                                foreach ($examenestudiante->errors as $atributo => $errores)
                                     $row['msj'] .= ', ' . $atributo . ': ' . implode(', ', $errores);
                                 $contadores['error al guardar registro']++;
                             } else {
