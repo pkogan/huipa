@@ -37,6 +37,9 @@ $this->params['breadcrumbs'][] = $model->idEstudiante0->apellidoNombre;
     <?= $this->render('template/basico', [
         'model'=>$model,
         'qrCode'=>$qrCode,
+        'respuesta'=>!Yii::$app->user->isGuest
+            && in_array(Yii::$app->user->getIdentity()->idRol,[app\models\Rol::ROL_DOCENTE,
+            app\models\Rol::ROL_AYUDANTE])
     ])?>
     
 

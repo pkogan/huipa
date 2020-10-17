@@ -41,6 +41,9 @@ use yii\grid\GridView;
         foreach ($model->examenEstudianteInstancias as $examenEstudianteIntancia){
             echo '<b>Ejercicio '.$i++.' - '.$examenEstudianteIntancia->idInstanciaEnunciado0->idMetaEnunciado0->nombre.'</b>';
             echo '<p>'.$examenEstudianteIntancia->idInstanciaEnunciado0->instancia.'</p>';
+            if(isset($respuesta)&&$respuesta){
+                echo '<p><b>Respuesta Sugerida:</b>'.$examenEstudianteIntancia->idInstanciaEnunciado0->respuesta.'</p>';
+            }
         }
         ?>
     
