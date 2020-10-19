@@ -123,6 +123,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>    
+       <?= Html::a('Borrar Envio', ['deleteenvio', 'id' => $model->idExamen], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Está seguro de borrar el envio de todos',
+                'method' => 'post',
+            ],
+        ]) ?>
+    
     
         <?= GridView::widget([
         'dataProvider' => $dataProviderEstudiante,

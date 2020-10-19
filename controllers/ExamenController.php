@@ -32,11 +32,11 @@ class ExamenController extends Controller {
                 'ruleConfig' => [
                     'class' => \app\models\AccessRule::className(),
                 ],
-                'only' => ['index', 'view', 'update', 'delete', 'create', 'importarestudiantes', 'deleteestudiantes', 'asignarinstancias', 'deleteinstancias'],
+                'only' => ['index', 'view', 'update', 'delete', 'create', 'importarestudiantes', 'deleteestudiantes', 'asignarinstancias', 'deleteinstancias', 'deleteenvio'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'update', 'delete', 'create', 'importarestudiantes', 'deleteestudiantes', 'asignarinstancias', 'deleteinstancias'],
+                        'actions' => ['index', 'view', 'update', 'delete', 'create', 'importarestudiantes', 'deleteestudiantes', 'asignarinstancias', 'deleteinstancias', 'deleteenvio'],
                         'roles' => [\app\models\Rol::ROL_DOCENTE],
                     ],
                     [
@@ -197,16 +197,31 @@ class ExamenController extends Controller {
         ]);
     }
 
+     public function actionDeleteenvio($id) {
+
+        $model = $this->findModel($id);
+        /**
+         * Borrar todas las instancias actuales
+         */
+        $estadoEnviado=$model->getExamenesEstudiantesEstado(\app\models\Estado::ESTADO_ENVIADO)->all();
+        foreach ($estadoEnviado as $estudiante) {
+            
+            $estudiante->hash = md5(uniqid());
+            $estudiante->idEstado = \app\models\Estado::ESTADO_ASIGNADO;
+            $estudiante->save();
+        }
+        return $this->redirect(['view', 'id' => $model->idExamen]);
+     }
+    
     public function actionAsignarinstancias($id) {
 
         $model = $this->findModel($id);
         /**
          * Borrar todas las instancias actuales
          */
-        foreach ($model->examenEstudiantes as $estudiante) {
-            foreach ($estudiante->examenEstudianteInstancias as $examenEstudianteInstancia) {
-                $examenEstudianteInstancia->delete();
-            }
+        $estadoInicial=$model->getExamenesEstudiantesEstado(\app\models\Estado::ESTADO_INICIAL)->all();
+        foreach ($estadoInicial as $estudiante) {
+            
             $estudiante->hash = md5(uniqid());
             $estudiante->idEstado = \app\models\Estado::ESTADO_ASIGNADO;
             $estudiante->save();
@@ -220,7 +235,7 @@ class ExamenController extends Controller {
 
             $cant = count($instanciasEnunciados);
             $i = random_int(1, 100);
-            foreach ($model->examenEstudiantes as $estudiante) {
+            foreach ($estadoInicial as $estudiante) {
                 $examenEstudianteInstancia = new \app\models\ExamenEstudianteInstancia();
                 $examenEstudianteInstancia->idExamenEstudiante = $estudiante->idExamenEstudiante;
                 $examenEstudianteInstancia->idInstanciaEnunciado = $instanciasEnunciados[$i % $cant]->idInstanciaEnunciado;

@@ -60,15 +60,15 @@ class ExamenEstudianteController extends Controller {
         /* Hack cambiar del en el caso de por ejermplo Académica 
           Todo: ver forma de generalizar */
         //echo 'entro en mail';
-        //$to = $model->idEstudiante0->mail;
-        $to = 'pablo.kogan@fi.uncoma.edu.ar';
+        $to = $model->idEstudiante0->mail;
+        //$to = 'pablo.kogan@fi.uncoma.edu.ar';
         $send = Yii::$app->mailer->compose()
                 ->setFrom('pablo.kogan@fi.uncoma.edu.ar')
                 ->setBcc(explode(',', str_replace(' ', '', $model->idExamen0->cco)))
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setHtmlBody('Estimadx, ' . $model->idEstudiante0->apellidoNombre .
-                        ', este correo es enviado por el sistema (huipa.fi.uncoma.edu.ar) Gererador de examenes Aleatorios la Facultad de Informática de la Universidad Nacional Comahue. <br>' .
+                        ', este correo es enviado por el sistema (incuba.fi.uncoma.edu.ar/huipa) Gererador de examenes Aleatorios la Facultad de Informática de la Universidad Nacional Comahue. <br>' .
                         'El exámen se envió adjunto y también se puede descargar desde el siguiente  ' . \yii\helpers\Html::a('link', $model->link) . '.<br>  Muchas Gracias.')
                 ->attach($model->linkpdf,
                         ['fileName' => $model->idExamen0->nombre . '-' . $model->idEstudiante0->apellidoNombre . '.pdf', 'contentType' => 'application/pdf'])
