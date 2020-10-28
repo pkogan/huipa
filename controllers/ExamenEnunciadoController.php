@@ -73,15 +73,23 @@ class ExamenEnunciadoController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($id) {
+    public function actionCreate($id,$idMetaEnunciado=null) {
         $model = new ExamenEnunciado();
         $model->idExamen = $id;
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $model->idMetaEnunciado = $idMetaEnunciado;
+        //$model->load(Yii::$app->request->post())
+        if (!is_null($idMetaEnunciado) && $model->save()) {
             return $this->redirect(['/examen/view', 'id' => $model->idExamen]);
         }
 
+        
+        $searchModel = new \app\models\MetaEnunciadoSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         return $this->render('create', [
                     'model' => $model,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 

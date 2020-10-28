@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'idMetaEnunciado',
             'nombre',
             'enunciado:ntext',
+            'descripcion',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

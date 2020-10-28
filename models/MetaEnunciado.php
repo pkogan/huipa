@@ -10,6 +10,8 @@ use Yii;
  * @property int $idMetaEnunciado
  * @property string $nombre
  * @property string $enunciado
+ * @property string|null $descripcion 
+
  *
  * @property ExamenEnunciado[] $examenEnunciados
  * @property InstanciaEnunciado[] $instanciaEnunciados
@@ -32,7 +34,7 @@ class MetaEnunciado extends \yii\db\ActiveRecord
         return [
             [['nombre', 'enunciado'], 'required'],
             [['enunciado'], 'string'],
-            [['nombre'], 'string', 'max' => 200],
+            [['nombre', 'descripcion'], 'string', 'max' => 200],
         ];
     }
 
@@ -45,6 +47,8 @@ class MetaEnunciado extends \yii\db\ActiveRecord
             'idMetaEnunciado' => 'Id Meta Enunciado',
             'nombre' => 'Nombre',
             'enunciado' => 'Enunciado',
+            'descripcion' => 'Descripcion', 
+
         ];
     }
 

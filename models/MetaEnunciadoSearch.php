@@ -18,7 +18,7 @@ class MetaEnunciadoSearch extends MetaEnunciado
     {
         return [
             [['idMetaEnunciado'], 'integer'],
-            [['nombre', 'enunciado'], 'safe'],
+            [['nombre', 'enunciado', 'descripcion'], 'safe'],
         ];
     }
 
@@ -62,7 +62,8 @@ class MetaEnunciadoSearch extends MetaEnunciado
         ]);
 
         $query->andFilterWhere(['like', 'nombre', $this->nombre])
-            ->andFilterWhere(['like', 'enunciado', $this->enunciado]);
+            ->andFilterWhere(['like', 'enunciado', $this->enunciado])
+            ->andFilterWhere(['like', 'descripcion', $this->descripcion]);
 
         return $dataProvider;
     }
