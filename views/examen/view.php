@@ -116,7 +116,14 @@ $this->params['breadcrumbs'][] = $this->title;
         }else{
             $msj=$inicial;
         }
-       echo Html::a('3-Enviar', ['/examen-estudiante/maillote', 'id' => $model->idExamen], [
+       echo Html::a('3.1-Test Envío', ['/examen-estudiante/maillote', 'id' => $model->idExamen,'test'=>1], [
+            'class' => 'btn btn-warning',
+            'data' => [
+                'confirm' => 'Está seguro de enviar de test a ' . $msj . ' personas con examenes en estado asignado?',
+                'method' => 'post',
+            ],
+        ]).' ';
+       echo Html::a('3.2-Enviar', ['/examen-estudiante/maillote', 'id' => $model->idExamen], [
             'class' => 'btn btn-success',
             'data' => [
                 'confirm' => 'Está seguro de enviar mail a ' . $msj . ' personas con examenes en estado asignado?',

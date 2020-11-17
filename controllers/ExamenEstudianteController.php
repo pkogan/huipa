@@ -27,7 +27,7 @@ class ExamenEstudianteController extends Controller {
                     'delete' => ['POST'],
                 ],
             ],
-                        'access' => [
+            'access' => [
                 'class' => \yii\filters\AccessControl::className(),
                 'ruleConfig' => [
                     'class' => \app\models\AccessRule::className(),
@@ -42,7 +42,7 @@ class ExamenEstudianteController extends Controller {
                     [
                         'allow' => true,
                         'actions' => ['view'],
-                        'roles' => ['?',\app\models\Rol::ROL_AYUDANTE],
+                        'roles' => ['?', \app\models\Rol::ROL_AYUDANTE],
                     ],
                 ],
             ],
@@ -55,15 +55,20 @@ class ExamenEstudianteController extends Controller {
      * @return boolean
      * @throws \yii\web\NotAcceptableHttpException
      */
-    private function mail($model) {
+    private function mail($model, $test = false) {
         $subject = 'Examen - ' . $model->idExamen0->nombre;
         /* Hack cambiar del en el caso de por ejermplo Académica 
           Todo: ver forma de generalizar */
         //echo 'entro en mail';
-        $to = $model->idEstudiante0->mail;
-        //$to = 'pablo.kogan@fi.uncoma.edu.ar';
+        if ($test) {
+            $subject='Testing '.$subject;
+            $to = Yii::$app->components['mailer']['transport']['username'];
+        } else {
+            $to = $model->idEstudiante0->mail;
+        }
+        //
         $send = Yii::$app->mailer->compose()
-                ->setFrom('pablo.kogan@fi.uncoma.edu.ar')
+                ->setFrom(Yii::$app->components['mailer']['transport']['username'])
                 ->setBcc(explode(',', str_replace(' ', '', $model->idExamen0->cco)))
                 ->setTo($to)
                 ->setSubject($subject)
@@ -74,11 +79,13 @@ class ExamenEstudianteController extends Controller {
                         ['fileName' => $model->idExamen0->nombre . '-' . $model->idEstudiante0->apellidoNombre . '.pdf', 'contentType' => 'application/pdf'])
                 ->send();
         if ($send) {
-            $model->idEstado = \app\models\Estado::ESTADO_ENVIADO;
-            if ($model->save()) {
-                return true;
-            } else {
-                throw new \yii\web\NotAcceptableHttpException('Error al cambiar de estado el examen estudiante');
+            if (!$test) {
+                $model->idEstado = \app\models\Estado::ESTADO_ENVIADO;
+                if ($model->save()) {
+                    return true;
+                } else {
+                    throw new \yii\web\NotAcceptableHttpException('Error al cambiar de estado el examen estudiante');
+                }
             }
         } else {
             throw new \yii\web\NotAcceptableHttpException('Error al enviar mail');
@@ -128,7 +135,7 @@ class ExamenEstudianteController extends Controller {
             'marginRight' => 15,
             'methods' => [
                 'SetHeader' => [$header],
-                'SetFooter' => ['<p>Se puede validar el examen, accediendo al link del código QR, o haciendo click <a href="' . $model->getLink() . '">'.$model->getLink().'</a></p>' .
+                'SetFooter' => ['<p>Se puede validar el examen, accediendo al link del código QR, o haciendo click <a href="' . $model->getLink() . '">' . $model->getLink() . '</a></p>' .
                     'Sistema de Generador de Examenes'], // <img style="padding-top:2px" height="12px" src="img/logolargonegro.png"/>  '],
             ]
         ]);
@@ -158,7 +165,7 @@ class ExamenEstudianteController extends Controller {
         }
     }
 
-    public function actionMaillote($id) {
+    public function actionMaillote($id, $test = false) {
         if (($examen = \app\models\Examen::findOne($id)) == null) {
             throw new \yii\web\NotAcceptableHttpException('Examen Inexistente');
         }
@@ -173,11 +180,11 @@ class ExamenEstudianteController extends Controller {
         foreach ($examenesEstadoInicial as $model) {
             //print_r($model);exit();
             // if ($model->idEstado == \app\models\Estado::ESTADO_INICIAL) {
-            $this->mail($model);
-            /*$model->idEstado = \app\models\Estado::ESTADO_ENVIADO;
-            if (!$model->save()) {
-                throw new \yii\web\NotAcceptableHttpException('Error al guardar certificado');
-            }*/
+            $this->mail($model, $test);
+            /* $model->idEstado = \app\models\Estado::ESTADO_ENVIADO;
+              if (!$model->save()) {
+              throw new \yii\web\NotAcceptableHttpException('Error al guardar certificado');
+              } */
             //}
         }
         /**
@@ -263,8 +270,6 @@ class ExamenEstudianteController extends Controller {
                     'model' => $model,
         ]);
     }
-
-
 
     /**
      * Deletes an existing ExamenEstudiante model.
