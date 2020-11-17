@@ -19,7 +19,7 @@ use Yii;
  */
 class Examen extends \yii\db\ActiveRecord
 {
-    const TOPE_MAIL_LOTE=50;
+    const TOPE_MAIL_LOTE=17;//para mail con pdf adjunto
     /**
      * {@inheritdoc}
      */
