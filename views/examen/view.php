@@ -149,7 +149,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'idExamen',
             ['label' => 'Estudiante', 'attribute' => 'apellidoNombre', 'value' => 'idEstudiante0.apellidoNombre'],
             ['label' => 'mail', 'attribute' => 'mail', 'value' => 'idEstudiante0.mail'],
-            ['label' => 'dni', 'attribute' => 'legajo', 'value' => 'idEstudiante0.legajo'],
+            ['label' => 'legajo', 'attribute' => 'legajo', 'value' => 'idEstudiante0.legajo'],
  ['attribute' => 'idEstado',
                 'label' => 'Estado',
                 'value'=>'idEstado0.estado',
