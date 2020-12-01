@@ -11,6 +11,10 @@ use app\models\ExamenEstudiante;
  */
 class ExamenEstudianteSearch extends ExamenEstudiante
 {
+    public $apellidoNombre;
+    public $legajo;
+    public $mail;
+    
     /**
      * {@inheritdoc}
      */
@@ -18,7 +22,7 @@ class ExamenEstudianteSearch extends ExamenEstudiante
     {
         return [
             [['idExamenEstudiante', 'idExamen', 'idEstudiante', 'idEstado'], 'integer'],
-            [['hash'], 'safe'],
+            [['hash','apellidoNombre','legajo','mail'], 'safe'],
         ];
     }
 
@@ -55,7 +59,7 @@ class ExamenEstudianteSearch extends ExamenEstudiante
             // $query->where('0=1');
             return $dataProvider;
         }
-
+        $query->joinWith('idEstudiante0');
         // grid filtering conditions
         $query->andFilterWhere([
             'idExamenEstudiante' => $this->idExamenEstudiante,
@@ -64,7 +68,11 @@ class ExamenEstudianteSearch extends ExamenEstudiante
             'idEstado' => $this->idEstado,
         ]);
 
-        $query->andFilterWhere(['like', 'hash', $this->hash]);
+        $query->andFilterWhere(['like', 'hash', $this->hash])
+                ->andFilterWhere(['like','estudiante.apellidoNombre', $this->apellidoNombre])
+                ->andFilterWhere(['like','estudiante.mail', $this->mail])
+                ->andFilterWhere(['like','estudiante.legajo', $this->legajo])
+                ;
 
         return $dataProvider;
     }

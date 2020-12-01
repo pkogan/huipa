@@ -4,7 +4,11 @@
 
 $this->title = 'huipa - Generador de enunciados aleatorios';
 $examenestudiante= app\models\ExamenEstudiante::findOne(['hash' => 'c94a8bae8e6da624df902f58b40c782b']);
-
+if(is_null($examenestudiante)){
+    $link='';
+}else{
+    $link=$examenestudiante->getLink();
+}
 ?>
 <div class="site-index">
 
@@ -14,7 +18,7 @@ $examenestudiante= app\models\ExamenEstudiante::findOne(['hash' => 'c94a8bae8e6d
 
         <p class="lead">El sistema de generación de enunciados aleatorios de la Facultad de Informática de la Universidad Nacional del Comahue.</p>
 
-        <p><a class="btn btn-lg btn-success" href="<?= $examenestudiante->getLink() ?>">Ver ejemplo de Examen</a></p>
+        <p><a class="btn btn-lg btn-success" href="<?= $link ?>">Ver ejemplo de Examen</a></p>
     </div>
 
     <div class="body-content">
@@ -26,7 +30,7 @@ $examenestudiante= app\models\ExamenEstudiante::findOne(['hash' => 'c94a8bae8e6d
                 <p>Es un generador de examenes únicos en formato pdf.  A partir de un Meta-enunciado, con variables y una generación de posibles instancias,
                     genera un documento único para cada estudiante y lo envia por mail</p>
 
-                <p><a class="btn btn-default" href="<?= $examenestudiante->getLink() ?>">Ver ejemplo de Examen &raquo;</a></p>
+                <p><a class="btn btn-default" href="<?= $link ?>">Ver ejemplo de Examen &raquo;</a></p>
             </div>
             <div class="col-lg-4">
                 <h2>Historia</h2>

@@ -147,10 +147,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //'idExamenEstudiante',
             //'idExamen',
-            'idEstudiante0.apellidoNombre',
-            'idEstudiante0.mail',
-            'idEstudiante0.dni',
-
+            ['label' => 'Estudiante', 'attribute' => 'apellidoNombre', 'value' => 'idEstudiante0.apellidoNombre'],
+            ['label' => 'mail', 'attribute' => 'mail', 'value' => 'idEstudiante0.mail'],
+            ['label' => 'dni', 'attribute' => 'legajo', 'value' => 'idEstudiante0.legajo'],
+ ['attribute' => 'idEstado',
+                'label' => 'Estado',
+                'value'=>'idEstado0.estado',
+                'filter' => [
+                    \app\models\Estado::ESTADO_INICIAL => 'Inicial',
+                    \app\models\Estado::ESTADO_ASIGNADO => 'Asignado',
+                    \app\models\Estado::ESTADO_ENVIADO => 'Enviado',
+                    \app\models\Estado::ESTADO_RECIBIDO => 'Recibido'
+                ]],
             
             ['class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {download} {mail}',
