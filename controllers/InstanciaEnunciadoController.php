@@ -30,12 +30,17 @@ class InstanciaEnunciadoController extends Controller {
                 'ruleConfig' => [
                     'class' => \app\models\AccessRule::className(),
                 ],
-                'only' => ['index', 'view', 'update', 'delete', 'create'],
+                'only' => ['index', 'view', 'update','updaterespuesta', 'delete', 'create'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'update', 'delete', 'create'],
+                        'actions' => ['index', 'view', 'update','updaterespuesta', 'delete', 'create'],
                         'roles' => [\app\models\Rol::ROL_DOCENTE],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['updaterespuesta'],
+                        'roles' => [\app\models\Rol::ROL_AYUDANTE],
                     ],
                 ],
             ],
@@ -103,7 +108,17 @@ class InstanciaEnunciadoController extends Controller {
                     'model' => $model,
         ]);
     }
+    public function actionUpdaterespuesta($id,$hash) {
+        $model = $this->findModel($id);
 
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['/examen-estudiante/view', 'hash' => $hash]);
+        }
+
+        return $this->render('updateRespuesta', [
+                    'model' => $model,
+        ]);
+    }
     /**
      * Deletes an existing InstanciaEnunciado model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
