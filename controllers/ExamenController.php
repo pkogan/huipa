@@ -134,12 +134,12 @@ class ExamenController extends Controller {
                                 $row['msj'] = 'ok';
                                 $contadores['importados']++;
                             }
-                            //$row['instancia']=$instancia;
-
-                            $rows[] = $row;
-                        } else {
-                            $contadores['error en archivo']++;
                         }
+                        //$row['instancia']=$instancia;
+
+                        $rows[] = $row;
+                    } else {
+                        $contadores['error en archivo']++;
                     }
                 }
                 //print_r($rows);
@@ -197,31 +197,31 @@ class ExamenController extends Controller {
         ]);
     }
 
-     public function actionDeleteenvio($id) {
+    public function actionDeleteenvio($id) {
 
         $model = $this->findModel($id);
         /**
          * Borrar todas las instancias actuales
          */
-        $estadoEnviado=$model->getExamenesEstudiantesEstado(\app\models\Estado::ESTADO_ENVIADO)->all();
+        $estadoEnviado = $model->getExamenesEstudiantesEstado(\app\models\Estado::ESTADO_ENVIADO)->all();
         foreach ($estadoEnviado as $estudiante) {
-            
+
             $estudiante->hash = md5(uniqid());
             $estudiante->idEstado = \app\models\Estado::ESTADO_ASIGNADO;
             $estudiante->save();
         }
         return $this->redirect(['view', 'id' => $model->idExamen]);
-     }
-    
+    }
+
     public function actionAsignarinstancias($id) {
 
         $model = $this->findModel($id);
         /**
          * Borrar todas las instancias actuales
          */
-        $estadoInicial=$model->getExamenesEstudiantesEstado(\app\models\Estado::ESTADO_INICIAL)->all();
+        $estadoInicial = $model->getExamenesEstudiantesEstado(\app\models\Estado::ESTADO_INICIAL)->all();
         foreach ($estadoInicial as $estudiante) {
-            
+
             $estudiante->hash = md5(uniqid());
             $estudiante->idEstado = \app\models\Estado::ESTADO_ASIGNADO;
             $estudiante->save();
