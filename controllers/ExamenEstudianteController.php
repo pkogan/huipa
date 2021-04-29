@@ -279,9 +279,11 @@ class ExamenEstudianteController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $model=$this->findModel($id);
+        
+        $id=$model->idExamen;
+        $model->delete();
+        return $this->redirect(['/examen/view','id'=>$id]);
     }
 
     /**
