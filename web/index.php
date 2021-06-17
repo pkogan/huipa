@@ -4,6 +4,7 @@
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
+//$_SERVER['HTTPS']='on';
 /*ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);*/
 // Notificar todos los errores de PHP
