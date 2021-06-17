@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             //'idInstanciaEnunciado',
             //'idMetaEnunciado',
-            'instancia',
+            'instancia:html',
             'c1:ntext',
             'c2:ntext',
             'c3:ntext',
