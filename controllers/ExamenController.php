@@ -220,13 +220,14 @@ class ExamenController extends Controller {
          * Borrar todas las instancias actuales
          */
         $estadoInicial = $model->getExamenesEstudiantesEstado(\app\models\Estado::ESTADO_INICIAL)->all();
+
         foreach ($estadoInicial as $estudiante) {
-
-            $estudiante->hash = md5(uniqid());
-            $estudiante->idEstado = \app\models\Estado::ESTADO_ASIGNADO;
-            $estudiante->save();
+                $estudiante->hash = md5(uniqid());
+                $estudiante->idEstado = \app\models\Estado::ESTADO_ASIGNADO;
+                $estudiante->save();
         }
-
+                
+        
         /**
          * Para cada Meta-enunciado crea las respectivas instancias para cada estudiante
          */
@@ -235,14 +236,52 @@ class ExamenController extends Controller {
 
             $cant = count($instanciasEnunciados);
             $i = random_int(1, 100);
+            $error='';
             foreach ($estadoInicial as $estudiante) {
+                /** TODO: Verificar que el estudiante no tenga asignada una instancia
+                 *  $instanciasEnunciados[$i % $cant]
+                 * Obtener listado de las instancias asignadas al Estudiante del enunciado
+                 * verificar que la cantidad < $cant
+                 * si está asignado pasar al siguiente hasta encontrar uno no asignado
+                 * select distinct idInstanciaEnunciado
+                 * from instanciaEnunciado ie innerjoin examenEstudianteInstancia eei on ie.idInstanciaEnunciado=eei.idInstanciaEnunciado
+                  inner join examenEstudiante ee on ee.idExamenEstudiante=eei.idExamenEstudiante
+                  where ee.idEstudiante=XX and ie.idMetaEnunciado=YY
+                 */
+                $query=new \yii\db\Query();
+                $query->select('ie.idInstanciaEnunciado')
+                        ->from(['instanciaEnunciado ie','examenEstudianteInstancia eei', 'examenEstudiante ee'])
+                        ->where('ie.idInstanciaEnunciado=eei.idInstanciaEnunciado and ee.idExamenEstudiante=eei.idExamenEstudiante and '
+                                . ' ee.idEstudiante=:idEstudiante and ie.idMetaEnunciado=:idMetaEnunciado',
+                                [':idEstudiante'=>$estudiante->idEstudiante,':idMetaEnunciado'=>$enunciado->idMetaEnunciado]);
+                $instancias= \yii\helpers\ArrayHelper::getColumn($query->all(),'idInstanciaEnunciado');
+                //print_r($instancias);exit;
+                if (in_array($instanciasEnunciados[$i % $cant]->idInstanciaEnunciado, $instancias)) {
+                    for ($index = $i + 1; in_array($instanciasEnunciados[$index % $cant]->idInstanciaEnunciado, $instancias) && (($i % $cant) != ($index % $cant)); $index++)
+                        ;
+                    if (($i % $cant) == ($index % $cant)) {
+                        $estudiante->idEstado = \app\models\Estado::ESTADO_INICIAL;
+                        $estudiante->save();
+                        $error.='Error enunciados repetidos al estudiante '.$estudiante->idEstudiante0->apellidoNombre. ', enunciado:'.$enunciado->idMetaEnunciado0->nombre.'; ';
+                        throw new \yii\web\HttpException(406, $error);
+                    } else {
+                        $i = $index;
+                    }
+                }
+
+                // $instanciasHistoricas= \app\models\Estudiante::findAll(['hash' => $hash]);
+
                 $examenEstudianteInstancia = new \app\models\ExamenEstudianteInstancia();
                 $examenEstudianteInstancia->idExamenEstudiante = $estudiante->idExamenEstudiante;
                 $examenEstudianteInstancia->idInstanciaEnunciado = $instanciasEnunciados[$i % $cant]->idInstanciaEnunciado;
                 $examenEstudianteInstancia->save();
                 $i++;
+                
+
+                
             }
         }
+            
 
         /**
          * Actualizo hash
