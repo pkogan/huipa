@@ -92,7 +92,7 @@ class ExamenEstudiante extends \yii\db\ActiveRecord {
     }
     
      public function getLink() {
-        return \yii\helpers\Url::base('https') . '/examen-estudiante/view?hash=' . $this->hash;
+        return \yii\helpers\Url::base('http') . '/examen-estudiante/view?hash=' . $this->hash;
     }
     public function getLinkpdf() {
         return $this->getLink().'&pdf=true';
