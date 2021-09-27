@@ -31,11 +31,11 @@ class MetaEnunciadoController extends Controller {
                 'ruleConfig' => [
                     'class' => \app\models\AccessRule::className(),
                 ],
-                'only' => ['index', 'view', 'update', 'delete', 'create','importar','deleteinstancias'],
+                'only' => ['index', 'view', 'update', 'delete', 'create','importar','deleteinstancias', 'exportarmoodle'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'update', 'delete', 'create','importar','deleteinstancias'],
+                        'actions' => ['index', 'view', 'update', 'delete', 'create','importar','deleteinstancias','exportarmoodle'],
                         'roles' => [\app\models\Rol::ROL_DOCENTE],
                     ],
                 ],
@@ -43,6 +43,16 @@ class MetaEnunciadoController extends Controller {
         ];
     }
 
+    public function actionExportarmoodle($id) {
+        header ("Content-Type:text/xml");
+
+        return $this->renderPartial('moodle', [
+                    'model' => $this->findModel($id),
+                    
+        ], true);
+    }
+    
+    
     public function actionImportar($id) {
         $metaEnunciado = $this->findModel($id);
         $model = new \app\models\ImportarInstanciaForm();

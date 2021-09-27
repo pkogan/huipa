@@ -90,7 +90,10 @@ class ExamenEstudiante extends \yii\db\ActiveRecord {
     public function getExamenEstudianteInstancias() {
         return $this->hasMany(ExamenEstudianteInstancia::className(), ['idExamenEstudiante' => 'idExamenEstudiante']);
     }
-    
+    /**
+     * 
+     * Tiene que ser http porque cuando lo descarga en el servidor no funciona con https
+     */
      public function getLink() {
         return \yii\helpers\Url::base('http') . '/examen-estudiante/view?hash=' . $this->hash;
     }
