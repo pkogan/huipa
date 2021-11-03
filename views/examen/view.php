@@ -56,6 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'idMetaEnunciado0.nombre',
             'idMetaEnunciado0.enunciado',
             'idMetaEnunciado0.CantidadExamenes',
+            'idMetaEnunciado0.CantidadInstancias',
 
             //['class' => 'yii\grid\ActionColumn'],
             
