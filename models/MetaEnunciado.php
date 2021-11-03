@@ -71,4 +71,16 @@ class MetaEnunciado extends \yii\db\ActiveRecord
     {
         return $this->hasMany(InstanciaEnunciado::className(), ['idMetaEnunciado' => 'idMetaEnunciado']);
     }
+    
+    public function getCantidadExamenes(){
+        $salida=' - ';
+        foreach ($this->examenEnunciados as $examenEnunciado){
+            $salida.=$examenEnunciado->idExamen0->nombre.'('.$examenEnunciado->idExamen0->getCountExamenesEstudiantes().')'.', ';
+        }
+        return count($this->examenEnunciados). $salida;
+    }
+    
+    public function getCantidadInstancias(){
+        return $this->getInstanciaEnunciados()->count();
+    }
 }

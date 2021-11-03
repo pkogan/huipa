@@ -104,4 +104,8 @@ class InstanciaEnunciado extends \yii\db\ActiveRecord
          
          return $enunciado;
     }
+    
+    public function getCantidadInstancias(){
+        return $this->getExamenEstudianteInstancias()->count();
+    }
 }

@@ -36,6 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'idMetaEnunciado',
             'nombre',
             'enunciado:ntext',
+            'cantidadExamenes',
+            'CantidadInstancias'
         ],
     ])
     ?>
@@ -71,6 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'c9:ntext',
             //'c10:ntext',
             'respuesta:html',
+            'CantidadInstancias',
             //['class' => 'yii\grid\ActionColumn'],
             ['class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update} {delete}',

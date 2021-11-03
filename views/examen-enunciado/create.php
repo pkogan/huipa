@@ -25,6 +25,8 @@ $_SESSION['idExamen']=$model->idExamen;
             'nombre',
             'enunciado:ntext',
             'descripcion',
+            'CantidadExamenes',
+            'CantidadInstancias',
 
             //['class' => 'yii\grid\ActionColumn'],
             
