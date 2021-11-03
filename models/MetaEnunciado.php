@@ -74,10 +74,13 @@ class MetaEnunciado extends \yii\db\ActiveRecord
     
     public function getCantidadExamenes(){
         $salida=' - ';
+        $envios=0;
         foreach ($this->examenEnunciados as $examenEnunciado){
             $salida.=$examenEnunciado->idExamen0->nombre.'('.$examenEnunciado->idExamen0->getCountExamenesEstudiantes().')'.', ';
+            $envios+=$examenEnunciado->idExamen0->getCountExamenesEstudiantes();
         }
-        return count($this->examenEnunciados). $salida;
+        
+        return 'Exámenes='.count($this->examenEnunciados). $salida. 'Instancias/Envios='.$this->getCantidadInstancias().'/'.$envios.'='.($this->getCantidadInstancias()/$envios);
     }
     
     public function getCantidadInstancias(){
