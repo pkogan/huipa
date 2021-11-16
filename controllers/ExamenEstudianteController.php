@@ -111,7 +111,8 @@ class ExamenEstudianteController extends Controller {
             // set to use core fonts only
             //'filename'=>$model->idLote0->idActividad0->fecha.str_replace(' ', '', $model->idPersona0->apellidoNombre).'_'.substr($model->idLote0->idTipoCertificado0->tipo,0,3).'_'.substr($model->idLote0->idActividad0->idTipoActividad0->tipo,0,3).'.pdf',
             'filename' => $model->idExamen0->nombre . '.pdf',
-            'mode' => Pdf::MODE_CORE,
+            //'mode' => Pdf::MODE_CORE,
+            'mode' => Pdf::MODE_UTF8,
             // A4 paper format
             'format' => Pdf::FORMAT_A4,
             // portrait orientation
