@@ -40,7 +40,7 @@ use yii\grid\GridView;
     $i=1;
         foreach ($model->examenEstudianteInstancias as $examenEstudianteIntancia){
             echo '<b>Ejercicio '.$i++.' - '.$examenEstudianteIntancia->idInstanciaEnunciado0->idMetaEnunciado0->nombre.'</b>';
-            echo '<p>'.$examenEstudianteIntancia->idInstanciaEnunciado0->instancia.'</p>';
+            echo '<p>'.utf8_encode($examenEstudianteIntancia->idInstanciaEnunciado0->instancia).'</p>';
             if(isset($respuesta)&&$respuesta){
                 echo '<p><b>Corrección:</b>'.$examenEstudianteIntancia->idInstanciaEnunciado0->respuesta.Html::a('+', ['/instancia-enunciado/updaterespuesta','id'=>$examenEstudianteIntancia->idInstanciaEnunciado0->idInstanciaEnunciado,'hash' => $model->hash], ['class' => 'btn btn-primary'] ).'</p>'
                         ;
