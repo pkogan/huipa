@@ -32,11 +32,11 @@ class ExamenController extends Controller {
                 'ruleConfig' => [
                     'class' => \app\models\AccessRule::className(),
                 ],
-                'only' => ['index', 'view', 'update', 'delete', 'create', 'importarestudiantes', 'deleteestudiantes', 'asignarinstancias', 'deleteinstancias', 'deleteenvio'],
+                'only' => ['index', 'view', 'update', 'delete', 'create', 'importarestudiantes', 'deleteestudiantes', 'asignarinstancias', 'deleteinstancias', 'deleteenvio','download'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'update', 'delete', 'create', 'importarestudiantes', 'deleteestudiantes', 'asignarinstancias', 'deleteinstancias', 'deleteenvio'],
+                        'actions' => ['index', 'view', 'update', 'delete', 'create', 'importarestudiantes', 'deleteestudiantes', 'asignarinstancias', 'deleteinstancias', 'deleteenvio','download'],
                         'roles' => [\app\models\Rol::ROL_DOCENTE],
                     ],
                     [
@@ -47,6 +47,41 @@ class ExamenController extends Controller {
                 ],
             ],
         ];
+    }
+
+    public function actionDownload($id) {
+        $examen = $this->findModel($id);
+        //$test = $examen->idActividad0->nombre . '-Lote' . $id . date('Ymd_His') . '.zip';
+        $test = 'Examen' . $id . date('Ymd_His') . '.zip';
+        //var_dump($test);
+        $carpeta = '../tmp/';
+
+        $zip = new \ZipArchive();
+        $res = $zip->open($carpeta . $test, \ZipArchive::CREATE);
+        $csv = '';
+        if ($res) {
+            foreach ($examen->examenEstudiantes as $examenEstudiante) {
+
+                /* @var $examenEstudiante \app\models\ExamenEstudiante */
+                $csv .= $examenEstudiante->idEstudiante0->dni . ',"' . $examenEstudiante->idEstudiante0->legajo . '","' . mb_strtoupper($examenEstudiante->idEstudiante0->apellidoNombre) . '","' . $examenEstudiante->idEstudiante0->mail . '","' . $examenEstudiante->idEstado0->estado . '","' . $examenEstudiante->getLink() . '"' . "\n";
+                $zip->addFromString(mb_strtoupper($examenEstudiante->idEstudiante0->apellidoNombre) . '.pdf', file_get_contents($examenEstudiante->getLinkpdf()));
+                //if(file_exists($examenEstudiante->getFilepath())){    
+                //$zip->addFromString(mb_strtoupper($examenEstudiante->idPersona0->apellidoNombre) . '.pdf', file_get_contents($examenEstudiante->getFilepath()));
+                //}
+            }
+            $zip->addFromString('0listado.csv', $csv);
+            $zip->close();
+            //exit('aca');
+            header('Content-Type: application/zip');
+            header("Content-Length: " . filesize($carpeta . $test));
+            header('Content-Disposition: attachment; filename=' . $test);
+            //header('Content-Disposition:  filename=' . $test);
+            echo file_get_contents($carpeta . $test);
+            //readfile($carpeta . $test); daba error con lote 269 ?? no descargaba todo el archivo
+        } else {
+            echo 'zip error';
+            die;
+        }
     }
 
     public function actionImportarestudiantes($id) {
@@ -222,12 +257,12 @@ class ExamenController extends Controller {
         $estadoInicial = $model->getExamenesEstudiantesEstado(\app\models\Estado::ESTADO_INICIAL)->all();
 
         foreach ($estadoInicial as $estudiante) {
-                $estudiante->hash = md5(uniqid());
-                $estudiante->idEstado = \app\models\Estado::ESTADO_ASIGNADO;
-                $estudiante->save();
+            $estudiante->hash = md5(uniqid());
+            $estudiante->idEstado = \app\models\Estado::ESTADO_ASIGNADO;
+            $estudiante->save();
         }
-                
-        
+
+
         /**
          * Para cada Meta-enunciado crea las respectivas instancias para cada estudiante
          */
@@ -236,7 +271,7 @@ class ExamenController extends Controller {
 
             $cant = count($instanciasEnunciados);
             $i = random_int(1, 100);
-            $error='';
+            $error = '';
             foreach ($estadoInicial as $estudiante) {
                 /** TODO: Verificar que el estudiante no tenga asignada una instancia
                  *  $instanciasEnunciados[$i % $cant]
@@ -248,13 +283,13 @@ class ExamenController extends Controller {
                   inner join examenEstudiante ee on ee.idExamenEstudiante=eei.idExamenEstudiante
                   where ee.idEstudiante=XX and ie.idMetaEnunciado=YY
                  */
-                $query=new \yii\db\Query();
+                $query = new \yii\db\Query();
                 $query->select('ie.idInstanciaEnunciado')
-                        ->from(['instanciaEnunciado ie','examenEstudianteInstancia eei', 'examenEstudiante ee'])
+                        ->from(['instanciaEnunciado ie', 'examenEstudianteInstancia eei', 'examenEstudiante ee'])
                         ->where('ie.idInstanciaEnunciado=eei.idInstanciaEnunciado and ee.idExamenEstudiante=eei.idExamenEstudiante and '
                                 . ' ee.idEstudiante=:idEstudiante and ie.idMetaEnunciado=:idMetaEnunciado',
-                                [':idEstudiante'=>$estudiante->idEstudiante,':idMetaEnunciado'=>$enunciado->idMetaEnunciado]);
-                $instancias= \yii\helpers\ArrayHelper::getColumn($query->all(),'idInstanciaEnunciado');
+                                [':idEstudiante' => $estudiante->idEstudiante, ':idMetaEnunciado' => $enunciado->idMetaEnunciado]);
+                $instancias = \yii\helpers\ArrayHelper::getColumn($query->all(), 'idInstanciaEnunciado');
                 //print_r($instancias);exit;
                 if (in_array($instanciasEnunciados[$i % $cant]->idInstanciaEnunciado, $instancias)) {
                     for ($index = $i + 1; in_array($instanciasEnunciados[$index % $cant]->idInstanciaEnunciado, $instancias) && (($i % $cant) != ($index % $cant)); $index++)
@@ -262,7 +297,7 @@ class ExamenController extends Controller {
                     if (($i % $cant) == ($index % $cant)) {
                         $estudiante->idEstado = \app\models\Estado::ESTADO_INICIAL;
                         $estudiante->save();
-                        $error.='Error enunciados repetidos al estudiante '.$estudiante->idEstudiante0->apellidoNombre. ', enunciado:'.$enunciado->idMetaEnunciado0->nombre.'; ';
+                        $error .= 'Error enunciados repetidos al estudiante ' . $estudiante->idEstudiante0->apellidoNombre . ', enunciado:' . $enunciado->idMetaEnunciado0->nombre . '; ';
                         throw new \yii\web\HttpException(406, $error);
                     } else {
                         $i = $index;
@@ -276,12 +311,9 @@ class ExamenController extends Controller {
                 $examenEstudianteInstancia->idInstanciaEnunciado = $instanciasEnunciados[$i % $cant]->idInstanciaEnunciado;
                 $examenEstudianteInstancia->save();
                 $i++;
-                
-
-                
             }
         }
-            
+
 
         /**
          * Actualizo hash

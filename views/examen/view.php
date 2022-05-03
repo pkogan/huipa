@@ -139,7 +139,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
-    
+       <?= Html::a('Descargar Exámenes (Emitidos)', ['download', 'id' => $model->idExamen], ['class' => 'btn btn-primary']);?>
+ 
     
         <?= GridView::widget([
         'dataProvider' => $dataProviderEstudiante,
